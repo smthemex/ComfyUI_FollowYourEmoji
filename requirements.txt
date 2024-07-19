@@ -1,0 +1,10 @@
+decord==0.6.0
+deepspeed==0.14.0
+easydict==1.10
+einops==0.4.1
+imageio==2.33.0
+onnx==1.16.1
+onnxruntime-gpu==1.14.0
+open-clip-torch
+opencv-python
+tensorboard==2.14.0
