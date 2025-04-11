@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Dict, Optional, Union
 from urllib import request
 
-from huggingface_hub import HfFolder, cached_download, hf_hub_download, model_info
+from huggingface_hub import HfFolder,  hf_hub_download, model_info
 from packaging import version
 
 from .. import __version__
@@ -260,42 +260,42 @@ def get_cached_module_file(
     if os.path.isfile(module_file_or_url):
         resolved_module_file = module_file_or_url
         submodule = "local"
-    elif pretrained_model_name_or_path.count("/") == 0:
-        available_versions = get_diffusers_versions()
-        # cut ".dev0"
-        latest_version = "v" + ".".join(__version__.split(".")[:3])
+    # elif pretrained_model_name_or_path.count("/") == 0:
+    #     available_versions = get_diffusers_versions()
+    #     # cut ".dev0"
+    #     latest_version = "v" + ".".join(__version__.split(".")[:3])
 
-        # retrieve github version that matches
-        if revision is None:
-            revision = latest_version if latest_version[1:] in available_versions else "main"
-            logger.info(f"Defaulting to latest_version: {revision}.")
-        elif revision in available_versions:
-            revision = f"v{revision}"
-        elif revision == "main":
-            revision = revision
-        else:
-            raise ValueError(
-                f"`custom_revision`: {revision} does not exist. Please make sure to choose one of"
-                f" {', '.join(available_versions + ['main'])}."
-            )
+    #     # retrieve github version that matches
+    #     if revision is None:
+    #         revision = latest_version if latest_version[1:] in available_versions else "main"
+    #         logger.info(f"Defaulting to latest_version: {revision}.")
+    #     elif revision in available_versions:
+    #         revision = f"v{revision}"
+    #     elif revision == "main":
+    #         revision = revision
+    #     else:
+    #         raise ValueError(
+    #             f"`custom_revision`: {revision} does not exist. Please make sure to choose one of"
+    #             f" {', '.join(available_versions + ['main'])}."
+    #         )
 
-        # community pipeline on GitHub
-        github_url = COMMUNITY_PIPELINES_URL.format(revision=revision, pipeline=pretrained_model_name_or_path)
-        try:
-            resolved_module_file = cached_download(
-                github_url,
-                cache_dir=cache_dir,
-                force_download=force_download,
-                proxies=proxies,
-                resume_download=resume_download,
-                local_files_only=local_files_only,
-                use_auth_token=False,
-            )
-            submodule = "git"
-            module_file = pretrained_model_name_or_path + ".py"
-        except EnvironmentError:
-            logger.error(f"Could not locate the {module_file} inside {pretrained_model_name_or_path}.")
-            raise
+    #     # community pipeline on GitHub
+    #     github_url = COMMUNITY_PIPELINES_URL.format(revision=revision, pipeline=pretrained_model_name_or_path)
+    #     try:
+    #         resolved_module_file = cached_download(
+    #             github_url,
+    #             cache_dir=cache_dir,
+    #             force_download=force_download,
+    #             proxies=proxies,
+    #             resume_download=resume_download,
+    #             local_files_only=local_files_only,
+    #             use_auth_token=False,
+    #         )
+    #         submodule = "git"
+    #         module_file = pretrained_model_name_or_path + ".py"
+    #     except EnvironmentError:
+    #         logger.error(f"Could not locate the {module_file} inside {pretrained_model_name_or_path}.")
+    #         raise
     else:
         try:
             # Load from URL or cache if already cached
